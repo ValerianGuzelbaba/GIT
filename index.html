@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pizza</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="page">
+      <div class="titre"><h1>Pizzeria de Valou</h1></div>
+      <ul>
+        <li data-prix="10" data-ref="Mega Fromage" data-id="1">
+          <span class="gauche"><strong>Mega Fromage</strong> : crème fraîche, roquefort, mozarella, chèvre, munster</span>
+          <span class="droite"><span class="prix">10€</span> <span class="moins">-</span> <span class="qt">0</span> <span class="plus">+</span> <span class="totalligne">0</span>€</span>
+        </li>
+        <li data-prix="9" data-ref="Vegetarienne" data-id="2">
+          <span class="gauche"><strong>Végétarienne</strong> : tomate, champignons, poivrons, oignons, mozza, oeuf</span>
+          <span class="droite"><span class="prix">9€</span> <span class="moins">-</span> <span class="qt">0</span> <span class="plus">+</span> <span class="totalligne">0</span>€</span>
+        </li>
+        <li data-prix="8" data-ref="Latina" data-id="3">
+          <span class="gauche"><strong>Latina</strong> : tomate, chorizo, oignos, oeuf, mozza</span>
+          <span class="droite"><span class="prix">8€</span> <span class="moins">-</span> <span class="qt">0</span> <span class="plus">+</span> <span class="totalligne">0</span>€</span>
+        </li>
+        <li data-prix="10" data-ref="Hawaïenne" data-id="4">
+          <span class="gauche"><strong>Hawaïenne</strong> : crème, jambon, annas, mozza</span>
+          <span class="droite"><span class="prix">10€</span> <span class="moins">-</span> <span class="qt">0</span> <span class="plus">+</span> <span class="totalligne">0</span>€</span>
+        </li>
+        <li data-prix="9" data-ref="Indiana" data-id="5">
+          <span class="gauche"><strong>Indiana</strong> : crème, jambon, lardons, tandoori, poivrons, oignons, mozza</span>
+          <span class="droite"><span class="prix">9€</span> <span class="moins">-</span> <span class="qt">0</span> <span class="plus">+</span> <span class="totalligne">0</span>€</span>
+        </li>
+        <li data-prix="10" data-ref="3 jambons" data-id="6">
+          <span class="gauche"><strong>3 jambons</strong> : tomate, jambon, lardons, chorizo, mozza</span>
+          <span class="droite"><span class="prix">10€</span> <span class="moins">-</span> <span class="qt">0</span> <span class="plus">+</span> <span class="totalligne">0</span>€</span>
+        </li>
+        <li data-prix="12" data-ref="Far-West" data-id="7">
+          <span class="gauche"><strong>Far-West</strong> : crème, oignons, poivrons, champignons, émincés de poulet, sauce barbecue, mozza</span>
+          <span class="droite"><span class="prix">12€</span> <span class="moins">-</span> <span class="qt">0</span> <span class="plus">+</span> <span class="totalligne">0</span>€</span>
+        </li>
+      </ul>
+      <div id="smart-button-container">
+        <div style="text-align: right"><label for="amount"> TOTAL : </label><input name="amountInput" type="number" id="amount" value="" readonly="readonly" /><span> €</span></div>
+        <p id="priceLabelError" style="visibility: hidden; color: red; text-align: center">Please enter a price</p>
+        <div id="commande">
+          <div><label for="description"> <strong>Votre commande :</strong></label><input type="text" name="descriptionInput" id="description" maxlength="127" value="" readonly="readonly" /></div>
+          <p id="descriptionError" style="visibility: hidden; color: red; text-align: center">Please enter a description</p>
+          <div id="invoiceidDiv" style="text-align: center; display: none"><label for="invoiceid"> </label><input name="invoiceid" maxlength="127" type="text" id="invoiceid" value="" /></div>
+          <p id="invoiceidError" style="visibility: hidden; color: red; text-align: center">Please enter an Invoice ID</p>
+          <div style="text-align: right"; id="paypal-button-container"></div>
+        </div>
+      </div>
+    <script src="https://www.paypal.com/sdk/js?client-id=sb&currency=EUR" data-sdk-integration-source="button-factory"></script>
+    <script>
+      function initPayPalButton() {
+        paypal.Buttons({
+          style: {
+            shape: 'pill',
+            color: 'blue',
+            layout: 'vertical',
+            label: 'paypal',
+          },   
+
+               onInit: function (data, actions) {
+                  if (invoiceidDiv.style.display === "block") {
+                    elArr.push(invoiceid);
+                  }
+                  elArr.forEach(function (item) {
+                    item.addEventListener("keyup", function (event) {
+                      var result = elArr.every(validate);
+                      if (result) {
+                        actions.enable();
+                      } else {
+                        actions.disable();
+                      }
+                    });
+                  });
+               },
+  
+              createOrder: function(data, actions) {
+            return actions.order.create({
+              purchase_units: [{"amount":{"currency_code":"EUR","value":1}}]
+            });
+          },
+
+          onApprove: function(data, actions) {
+            return actions.order.capture().then(function(details) {
+              alert('Transaction completed by ' + details.payer.name.given_name + '!');
+            });
+          },
+  
+          onError: function(err) {
+            console.log(err);
+          }
+        }).render('#paypal-button-container');
+      }
+       initPayPalButton();
+      </script>
+      </div>
+     </div>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
